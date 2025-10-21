@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+    crossorigin="anonymous" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet" />
+
+  <title>API</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+</head>
+<style>
+
+   * , html, body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+/* List of Users */
+  .user-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    position: relative;
+    gap: 20px;
+
+  }
+
+  .user-grid img {
+     width: 500px;
+    margin-top: 20px;
+    opacity: 0.8;
+  }
+
+  .fetch p {
+    text-align: center;
+      font-size: 24px;
+    
+  }
+
+   span {
+    font-size: 3rem;
+    font-weight: 800;
+    text-transform: uppercase;
+   }
+
+   em {
+    margin: 0;
+     font-size: 4.2rem;
+    font-weight: 900;
+   }
+
+  .card li:nth-child(2) {
+    font-weight: 800;
+  }
+
+  .users {
+    margin: 30px 0;
+  }
+
+  /* List of Posts */
+  .posts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .title {
+    margin-bottom: 40px;
+  }
+    
+
+   @media (max-width: 800px) {
+      .user-grid {
+       grid-template-columns: repeat(2, 1fr);
+      gap:10px;
+    }
+
+    .posts {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+     .posts img {
+      width: 100%;
+      /* margin-bottom: 30px; */
+    }
+
+    .fetch {
+      letter-spacing: 0;
+      text-align: center;
+      font-size: 24px;
+    }
+        .para {
+      margin:25px 0;
+       }
+  }
+
+  @media (max-width: 550px) {
+      .navbar {
+      height: 110px;
+      /* padding: 0 20px; */
+    }
+
+    .navbar .flex {
+      flex-direction: column;
+    }
+    .user-grid {
+      grid-template-columns: 1fr;
+    }
+
+   span {
+    font-size: 2.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+   }
+
+   em {
+     font-size: 3.5rem;
+    font-weight: 900;
+   }
+
+    .posts img {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .para {
+      margin:25px 0;
+       }
+
+  }
+</style>
+
+<body>
+  <header>
+  <div class="navbar">
+    <div class="container flex">
+      <h1 style="font-size: 32px" ;"class="logo"><a href="index.html">Shams.</a></h1>
+      <nav>
+        <ul class="nav-list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="blogs.html">Blogs</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="media.html">Media</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+
+  <main class="container">
+    <div class="fetch">
+        <p>Fetching <span>the <em>data</em></span> </p>
+        <img src="./images/generated_image_5.png" />
+   </div>
+    <div class="users">
+      <h1>List of Users</h1>
+    </div>
+    <div class="container" id="app"></div>
+    <div id="res"></div>
+  </main>
+  <!--  -->
+  <!-- Footer -->
+  <footer class="footer bg-dark py-5">
+    <div class="container grid grid-3">
+      <div class="copyright">
+        <h1>Shams.</h1>
+        <p>Copyright &copy; 2025</p>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="blogs.html">Blogs</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="media.html">Media</a></li>
+        </ul>
+      
+      </nav>
+      <div class="social">
+        <a href="https://github.com/toor-4"><i class="fab fa-github fa-2x"></i></a>
+        <a href="#"><i class="fab fa-facebook fa-2x"></i></a>
+        <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
+        <a href="#"><i class="fab fa-twitter fa-2x"></i></a>
+      </div>
+    </div>
+  </footer>
+  
+  <!--  -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <script src="./images.js"></script>
+
+
+  <script>
+
+    // FETCH API
+  //  const url_1 = "https://apimocker.com/users";
+  const url_1 =  "https://jsonplaceholder.typicode.com/users"
+    
+    async function getUsers() {
+    const response = await fetch(url_1);
+    // console.log(response)
+     const data = await response.json();
+    //  console.log(data)
+     const resData = data.slice(0,6)
+    
+     resData.forEach((element, index) => {
+        // console.log(element);
+
+        const _name = `${element.name}`;
+        const _email = `${element.email}`;
+   
+        const div = document.createElement("div");
+ 
+        div.className = "card";
+
+        const listItem1 = document.createElement("li");
+        const listItem2 = document.createElement("li");
+
+        const image = document.createElement("img");
+
+        // use image from images.js by matching index
+        if (images[index]) {
+          image.src = images[index].img
+        } else {
+          image.src = "images/default.jpg"; // fallback if not enough images
+        }
+
+        image.style.width = "70px";
+        image.style.height = "70px"
+        image.style.marginBottom = "15px";
+
+        const el_name = document.createTextNode(_name);
+        const el_email = document.createTextNode(_email);
+
+        listItem1.appendChild(el_name);
+        listItem2.appendChild(el_email);
+
+        div.appendChild(image);
+        div.appendChild(listItem1);
+        div.appendChild(listItem2);
+
+        const app = document.getElementById("app");
+        app.className = "user-grid";
+        app.appendChild(div);
+      });
+    }
+    getUsers();
+
+  const url_2 = "https://jsonplaceholder.typicode.com/posts?_limit=6"
+    // function getPosts() {
+    //   axios
+    //   .get(url_2)
+    //     .then((res) => showOutput(res))
+    //     .catch((err) => console.error(err));
+    // }
+// AXIOS ( third party API)
+    async function getPosts(){
+      try {
+        const res = await axios.get(url_2)
+        showOutput(res)
+      } catch (error) {
+        console.error(err)
+      }
+    }
+
+    function showOutput(res) {
+      const data = res.data;
+      // console.log(data);
+      document.getElementById("res").innerHTML = `
+      <div class="users">
+        <h1>Posts</h1>
+      </div>
+
+      <div class="user-grid  posts">
+        <div>
+          <img  src="./images/fetch-lg.png" />
+        </div>
+      <div class="res">
+        <ul class="title">
+              ${res.data
+          .map(
+            (post) =>
+              `<li class='card para'>${post.title}</li>`
+          )
+          .join("")}
+        </ul>
+      </div>
+`;
+    }
+
+    getPosts();
+  </script>
+</body>
+</html>
