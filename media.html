@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A quick reference for HTTP: the four verbs you'll actually use, the status codes worth memorizing, and what a request looks like under the hood." />
+    <link rel="icon" href="images/favicon.png" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
@@ -12,149 +16,413 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
       rel="stylesheet" />
-    <title>Media</title>
+
+    <title>Shams. — HTTP Field Guide</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/utilities.css" />
+    <style>
+      .ref-page {
+        padding: 3.5rem 40px 5rem;
+      }
+
+      .ref-section {
+        margin-top: 4.5rem;
+      }
+
+      .ref-section h2 {
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .ref-section-lead {
+        color: var(--muted-color);
+        max-width: 560px;
+        margin-bottom: 2.25rem;
+      }
+
+      /* Verbs */
+      .method-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.25rem;
+      }
+
+      .method-card {
+        border: 1px solid #dde5ec;
+        border-radius: 6px;
+        padding: 1.5rem;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+
+      .method-card:hover {
+        transform: translateY(-6px);
+        border-color: var(--secondary-color);
+      }
+
+      .method-badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 0.04em;
+        border: 1px solid currentColor;
+        border-radius: 3px;
+        padding: 0.2rem 0.6rem;
+        margin-bottom: 1rem;
+      }
+
+      .method-get {
+        color: var(--secondary-color);
+      }
+
+      .method-post,
+      .method-put {
+        color: var(--primary-color);
+      }
+
+      .method-delete {
+        color: var(--dark-color);
+        border-color: var(--muted-color);
+      }
+
+      .method-card p {
+        margin-bottom: 0.75rem;
+      }
+
+      .method-card code {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        color: var(--muted-color);
+      }
+
+      /* Status codes */
+      .status-groups {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem 3rem;
+      }
+
+      .status-group h3 {
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #dde5ec;
+      }
+
+      .status-2xx h3 {
+        color: var(--secondary-color);
+      }
+
+      .status-4xx h3,
+      .status-5xx h3 {
+        color: var(--primary-color);
+      }
+
+      .status-3xx h3 {
+        color: var(--muted-color);
+      }
+
+      .status-row {
+        display: flex;
+        gap: 1rem;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid #eef2f6;
+      }
+
+      .status-code {
+        flex-shrink: 0;
+        width: 3.2rem;
+        font-family: var(--font-mono);
+        font-weight: 700;
+      }
+
+      .status-row p {
+        margin: 0;
+      }
+
+      .status-row .status-name {
+        font-weight: 600;
+        margin-right: 0.4rem;
+      }
+
+      .status-row .status-meaning {
+        color: var(--muted-color);
+      }
+
+      /* Anatomy */
+      .anatomy-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+      }
+
+      .anatomy-block {
+        background: var(--dark-color);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .anatomy-label {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #9fc3d8;
+        padding: 0.85rem 1.25rem;
+        border-bottom: 1px solid var(--line-color);
+      }
+
+      .anatomy-block pre {
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+        line-height: 1.8;
+        color: #cfe0ec;
+        padding: 1.25rem;
+        overflow-x: auto;
+      }
+
+      .anatomy-block .tok-verb {
+        color: var(--primary-color);
+      }
+
+      .anatomy-block .tok-status-ok {
+        color: var(--secondary-color);
+      }
+
+      .anatomy-block .tok-key {
+        color: #9fc3d8;
+      }
+
+      .anatomy-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1.5rem;
+        margin-top: 1rem;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        color: var(--muted-color);
+      }
+
+      @media (max-width: 800px) {
+        .method-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .status-groups {
+          grid-template-columns: 1fr;
+        }
+
+        .anatomy-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 500px) {
+        .method-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
-  <style>
-    .container.media h1 {
-      text-align: center;
-      margin: 40px 0;
-    }
-
-    img {
-      height: 80vh;
-      width: auto;
-      margin-bottom: 20px;
-      /* object-fit: contain; */
-    }
-    .user-grid {
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: 20px; /* optional for spacing */
-    }
-
-    /* Desktop layout */
-    .left {
-      grid-column: 1 / 2;
-      grid-row: 1 / 4;
-    }
-    .right {
-      grid-column: 3 / 8;
-      grid-row: 1 / 2;
-      align-self: center;
-      border-left: 1px solid rgba(0, 0, 0, 0.8);
-      padding: 20px;
-    }
-    .lorem {
-      grid-column: 3 / 8;
-      grid-row: 2 / 3;
-      padding: 0;
-    }
-
-    .lorem p {
-      margin-top: 0;
-    }
-
-    /* ✅ Responsive layout for smaller screens */
-    @media (max-width: 800px) {
-      .user-grid {
-        grid-template-columns: 1fr; /* single column */
-        grid-template-rows: auto;
-      }
-
-      /* Reset grid placement */
-      .left,
-      .right,
-      .lorem {
-        grid-column: auto;
-        grid-row: auto;
-        justify-self: center; /* optional: center items horizontally */
-      }
-
-      img {
-        width: 100%;
-        height: auto; /* make image scale down properly */
-      }
-
-      iframe {
-        width: 100%;
-        height: auto;
-        aspect-ratio: 16 / 9; /* keeps video proportions */
-      }
-      .right {
-        border: none;
-      }
-    }
-  </style>
   <body>
-    <div class="navbar">
-      <div class="container flex">
-        <h1 class="logo"><a href="index.html">Shams.</a></h1>
-        <nav>
+    <header class="site-header">
+      <div class="container nav-inner">
+        <a class="logo" href="index.html">Shams<span class="accent-dot">.</span></a>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-nav"
+          aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+        <nav id="primary-nav" class="primary-nav">
           <ul class="nav-list">
             <li><a href="index.html">Home</a></li>
             <li><a href="blogs.html">Blogs</a></li>
             <li><a href="api.html">API</a></li>
-            <li><a href="media.html">Media</a></li>
+            <li><a href="media.html" class="active">Reference</a></li>
           </ul>
         </nav>
       </div>
-    </div>
-    <div class="container media">
-      <h1>iMAGES / ViDeOS</h1>
-      <div class="user-grid">
-        <div class="left">
-          <img src="./images/me-h2O.png" />
-          <!-- width="560"
-          height="314" -->
-        </div>
+    </header>
 
-        <div class="right">
-          <iframe
-            src="https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2Falfred.teogalbo%2Fvideos%2F2256096624422738%2F&show_text=false&width=560&t=0"
-            width="360"
-            height="214"
-            style="border: none; overflow: hidden"
-            scrolling="no"
-            frameborder="0"
-            allowfullscreen="true"
-            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-            allowfullscreen="true"></iframe>
+    <main class="container ref-page">
+      <span class="eyebrow">Field Guide</span>
+      <h1>The verbs, the codes, the anatomy.</h1>
+      <p class="lead" style="max-width: 640px">
+        Everything on the <a href="api.html" class="text-primary">live demo</a>
+        and in the
+        <a href="blogs.html" class="text-primary">waiter analogy</a>, laid out
+        as a quick reference — the four verbs you'll actually use, the status
+        codes worth memorizing, and what a request looks like under the hood.
+      </p>
+
+      <!-- HTTP verbs -->
+      <section class="ref-section">
+        <h2>Four verbs, one conversation</h2>
+        <p class="ref-section-lead">
+          Every request tells the API what kind of favor you're asking for.
+        </p>
+
+        <div class="method-grid">
+          <div class="method-card reveal">
+            <span class="method-badge method-get">GET</span>
+            <p>Asking what's on the menu — read-only, nothing changes.</p>
+            <code>GET /menu/steak</code>
+          </div>
+
+          <div class="method-card reveal">
+            <span class="method-badge method-post">POST</span>
+            <p>Placing a brand new order — creates something that didn't exist.</p>
+            <code>POST /orders</code>
+          </div>
+
+          <div class="method-card reveal">
+            <span class="method-badge method-put">PUT / PATCH</span>
+            <p>Sending the order back to fix it — updates what's already there.</p>
+            <code>PATCH /orders/42</code>
+          </div>
+
+          <div class="method-card reveal">
+            <span class="method-badge method-delete">DELETE</span>
+            <p>Canceling the order entirely — removes it for good.</p>
+            <code>DELETE /orders/42</code>
+          </div>
         </div>
-        <div class="lorem">
-          <p>Time flies so fast. The video above was recorded 7 yrs ago.</p>
+      </section>
+
+      <!-- Status codes -->
+      <section class="ref-section">
+        <h2>Status codes worth memorizing</h2>
+        <p class="ref-section-lead">
+          The waiter always comes back with a number. Here's what the common
+          ones actually mean.
+        </p>
+
+        <div class="status-groups">
+          <div class="status-group status-2xx">
+            <h3>2xx — Success</h3>
+            <div class="status-row">
+              <span class="status-code">200</span>
+              <p><span class="status-name">OK</span><span class="status-meaning">Here's what you asked for.</span></p>
+            </div>
+            <div class="status-row">
+              <span class="status-code">201</span>
+              <p><span class="status-name">Created</span><span class="status-meaning">Made the thing. Here it is.</span></p>
+            </div>
+            <div class="status-row">
+              <span class="status-code">204</span>
+              <p><span class="status-name">No Content</span><span class="status-meaning">Done. Nothing to send back.</span></p>
+            </div>
+          </div>
+
+          <div class="status-group status-3xx">
+            <h3>3xx — Redirection</h3>
+            <div class="status-row">
+              <span class="status-code">301</span>
+              <p><span class="status-name">Moved Permanently</span><span class="status-meaning">It lives somewhere else now.</span></p>
+            </div>
+            <div class="status-row">
+              <span class="status-code">304</span>
+              <p><span class="status-name">Not Modified</span><span class="status-meaning">Same as what you already have.</span></p>
+            </div>
+          </div>
+
+          <div class="status-group status-4xx">
+            <h3>4xx — Client Error</h3>
+            <div class="status-row">
+              <span class="status-code">400</span>
+              <p><span class="status-name">Bad Request</span><span class="status-meaning">That request didn't make sense.</span></p>
+            </div>
+            <div class="status-row">
+              <span class="status-code">401</span>
+              <p><span class="status-name">Unauthorized</span><span class="status-meaning">Who are you, exactly?</span></p>
+            </div>
+            <div class="status-row">
+              <span class="status-code">404</span>
+              <p><span class="status-name">Not Found</span><span class="status-meaning">Nothing lives at that address.</span></p>
+            </div>
+          </div>
+
+          <div class="status-group status-5xx">
+            <h3>5xx — Server Error</h3>
+            <div class="status-row">
+              <span class="status-code">500</span>
+              <p><span class="status-name">Internal Server Error</span><span class="status-meaning">Something broke back here.</span></p>
+            </div>
+            <div class="status-row">
+              <span class="status-code">503</span>
+              <p><span class="status-name">Service Unavailable</span><span class="status-meaning">Down for a moment. Try again.</span></p>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <!-- Anatomy -->
+      <section class="ref-section">
+        <h2>What a request actually looks like</h2>
+        <p class="ref-section-lead">
+          The same round trip from the <a href="api.html" class="text-primary">live demo</a>, unpacked line by line.
+        </p>
+
+        <div class="anatomy-grid">
+          <div class="anatomy-block">
+            <div class="anatomy-label">Request</div>
+            <pre><span class="tok-verb">GET</span> /users/1 HTTP/1.1
+<span class="tok-key">Host:</span> jsonplaceholder.typicode.com
+<span class="tok-key">Accept:</span> application/json</pre>
+          </div>
+
+          <div class="anatomy-block">
+            <div class="anatomy-label">Response</div>
+            <pre>HTTP/1.1 <span class="tok-status-ok">200 OK</span>
+<span class="tok-key">Content-Type:</span> application/json
+
+{ "id": 1, "name": "Leanne Graham" }</pre>
+          </div>
+        </div>
+        <div class="anatomy-legend">
+          <span>Line 1 — method &amp; path / status</span>
+          <span>Middle lines — headers</span>
+          <span>Last line — body</span>
+        </div>
+      </section>
+    </main>
+
     <!-- Footer -->
-    <footer class="footer bg-dark py-5">
-      <div class="container grid grid-3">
-        <div class="copyright">
-          <h1>Shams.</h1>
-          <p>Copyright &copy; 2025</p>
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <span class="logo">Shams.</span>
+          <p class="muted">Copyright &copy; 2026</p>
+          <p class="tagline">Built with HTML · CSS · JS — no framework.</p>
         </div>
-        <nav>
+        <nav class="footer-nav">
           <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="blogs.html">Blogs</a></li>
             <li><a href="api.html">API</a></li>
-            <li><a href="media.html">Media</a></li>
+            <li><a href="media.html">Reference</a></li>
           </ul>
         </nav>
         <div class="social">
-          <a href="https://github.com/toor-4"
-            ><i class="fab fa-github fa-2x"></i
+          <a href="https://github.com/toor-4" aria-label="GitHub"
+            ><i class="fab fa-github"></i
           ></a>
-          <a href="#"><i class="fab fa-facebook fa-2x"></i></a>
-          <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
-          <a href="#"><i class="fab fa-twitter fa-2x"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
         </div>
       </div>
     </footer>
     <!-- <script src="js/menu.js"></script> -->
+    <script src="js/main.js"></script>
   </body>
 </html>

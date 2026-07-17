@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="A live demo page: real fetch() and axios requests to JSONPlaceholder, rendered on the page as they happen — with a request log and refetch on demand." />
+  <link rel="icon" href="images/favicon.png" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
     integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
     crossorigin="anonymous" />
@@ -11,297 +14,683 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet" />
 
-  <title>API</title>
+  <title>Shams. — Live API demo</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/utilities.css" />
-</head>
-<style>
-
-   * , html, body {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-  }
-
-/* List of Users */
-  .user-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    padding: 0;
-    justify-content: center;
-    align-items: center;
-    list-style: none;
-    position: relative;
-    gap: 20px;
-
-  }
-
-  .user-grid img {
-     width: 500px;
-    margin-top: 20px;
-    opacity: 0.8;
-  }
-
-  .fetch p {
-    text-align: center;
-      font-size: 24px;
-    
-  }
-
-   span {
-    font-size: 3rem;
-    font-weight: 800;
-    text-transform: uppercase;
-   }
-
-   em {
-    margin: 0;
-     font-size: 4.2rem;
-    font-weight: 900;
-   }
-
-  .card li:nth-child(2) {
-    font-weight: 800;
-  }
-
-  .users {
-    margin: 30px 0;
-  }
-
-  /* List of Posts */
-  .posts {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .title {
-    margin-bottom: 40px;
-  }
-    
-
-   @media (max-width: 800px) {
-      .user-grid {
-       grid-template-columns: repeat(2, 1fr);
-      gap:10px;
+  <style>
+    .request-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 2rem;
     }
 
-    .posts {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #c3d5e2;
+      border: 1px solid var(--line-color);
+      border-radius: 3px;
+      padding: 0.5rem 0.9rem;
     }
 
-     .posts img {
-      width: 100%;
-      /* margin-bottom: 30px; */
+    .badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      animation: pulse 1.6s ease-in-out infinite;
     }
 
-    .fetch {
-      letter-spacing: 0;
-      text-align: center;
-      font-size: 24px;
-    }
-        .para {
-      margin:25px 0;
-       }
-  }
-
-  @media (max-width: 550px) {
-      .navbar {
-      height: 110px;
-      /* padding: 0 20px; */
+    .badge .dot-cyan {
+      background: var(--secondary-color);
+      animation-delay: 0.4s;
     }
 
-    .navbar .flex {
-      flex-direction: column;
+    .badge.is-settled .dot {
+      animation: none;
+      opacity: 1;
     }
+
+    .badge.is-error {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.35;
+      }
+    }
+
+    .api-main {
+      padding: 3.5rem 40px 4.5rem;
+    }
+
+    /* Request log */
+    .log-panel {
+      border: 1px solid var(--line-color);
+      background: var(--dark-color);
+      border-radius: 6px;
+      margin-bottom: 3.5rem;
+      overflow: hidden;
+    }
+
+    .log-panel-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--line-color);
+    }
+
+    .log-panel-header .eyebrow {
+      margin: 0;
+    }
+
+    .log-hint {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--muted-color);
+    }
+
+    .request-log {
+      list-style: none;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .request-log:empty::after {
+      content: "No requests yet — load the page or hit refetch below.";
+      display: block;
+      padding: 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--muted-color);
+    }
+
+    .log-entry {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.65rem 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #c3d5e2;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      animation: log-in 0.3s ease both;
+    }
+
+    @keyframes log-in {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .log-time {
+      color: var(--muted-color);
+      flex-shrink: 0;
+    }
+
+    .log-method {
+      flex-shrink: 0;
+      font-weight: 700;
+      color: var(--secondary-color);
+    }
+
+    .log-path {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .log-status {
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    .log-entry.is-ok .log-status {
+      color: var(--secondary-color);
+    }
+
+    .log-entry.is-error .log-status {
+      color: var(--primary-color);
+    }
+
+    .log-ms {
+      flex-shrink: 0;
+      color: var(--muted-color);
+    }
+
+    .api-main .users h2,
+    .api-main #res h2 {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.5rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .section-tag {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--primary-color);
+      border: 1px solid var(--line-color);
+      border-radius: 3px;
+      padding: 0.2rem 0.55rem;
+    }
+
+    .refetch-btn {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      background: none;
+      color: var(--secondary-color);
+      border: 1px solid var(--line-color);
+      border-radius: 3px;
+      padding: 0.4rem 0.75rem;
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .refetch-btn:hover:not(:disabled) {
+      border-color: var(--secondary-color);
+    }
+
+    .refetch-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .refetch-btn .spin {
+      display: inline-block;
+    }
+
+    .refetch-btn:disabled .spin {
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
     .user-grid {
-      grid-template-columns: 1fr;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      list-style: none;
     }
 
-   span {
-    font-size: 2.5rem;
-    font-weight: 800;
-    text-transform: uppercase;
-   }
+    .card {
+      background: #fff;
+      border: 1px solid #dde5ec;
+      border-radius: 6px;
+      padding: 1.5rem;
+      animation: card-in 0.35s ease both;
+    }
 
-   em {
-     font-size: 3.5rem;
-    font-weight: 900;
-   }
+    @keyframes card-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
 
-    .posts img {
+    .card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 0.9rem;
+    }
+
+    .card li:first-of-type {
+      font-weight: 600;
+      list-style: none;
+    }
+
+    .card li:nth-child(2) {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--muted-color);
+      list-style: none;
+    }
+
+    /* Skeleton loading state */
+    .skeleton {
+      position: relative;
+      background: #e7edf2;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+
+    .skeleton::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    .skeleton-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-bottom: 0.9rem;
+    }
+
+    .skeleton-line {
+      height: 0.85rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .skeleton-line:last-child {
+      margin-bottom: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card,
+      .log-entry {
+        animation: none;
+      }
+
+      .skeleton::after,
+      .refetch-btn:disabled .spin {
+        animation: none;
+      }
+    }
+
+    #res {
+      margin-top: 4rem;
+    }
+
+    .user-grid.posts {
+      grid-template-columns: 1fr 2fr;
+      align-items: start;
+      gap: 2rem;
+    }
+
+    .user-grid.posts img {
+      border-radius: 6px;
       width: 100%;
-      margin-bottom: 10px;
+      height: auto;
     }
-    .para {
-      margin:25px 0;
-       }
 
-  }
-</style>
+    .title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      list-style: none;
+    }
+
+    .card.para {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .error-note {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--primary-color);
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 800px) {
+      .user-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .user-grid.posts {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 550px) {
+      .user-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .log-hint {
+        display: none;
+      }
+
+      .log-time {
+        display: none;
+      }
+
+      .log-entry {
+        gap: 0.6rem;
+      }
+    }
+  </style>
+</head>
 
 <body>
-  <header>
-  <div class="navbar">
-    <div class="container flex">
-      <h1 style="font-size: 32px" ;"class="logo"><a href="index.html">Shams.</a></h1>
-      <nav>
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a class="logo" href="index.html">Shams<span class="accent-dot">.</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"
+        aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="primary-nav" class="primary-nav">
         <ul class="nav-list">
           <li><a href="index.html">Home</a></li>
           <li><a href="blogs.html">Blogs</a></li>
-          <li><a href="api.html">API</a></li>
-          <li><a href="media.html">Media</a></li>
+          <li><a href="api.html" class="active">API</a></li>
+          <li><a href="media.html">Reference</a></li>
         </ul>
       </nav>
     </div>
-  </div>
-</header>
+  </header>
 
-
-  <main class="container">
-    <div class="fetch">
-        <p>Fetching <span>the <em>data</em></span> </p>
-        <img src="./images/generated_image_5.png" />
-   </div>
-    <div class="users">
-      <h1>List of Users</h1>
+  <section class="hero">
+    <div class="container hero-inner">
+      <p class="eyebrow">Live Demo</p>
+      <h1>Two real requests, happening right now</h1>
+      <p class="lead">
+        This page calls JSONPlaceholder twice — once with <code>fetch()</code>,
+        once with axios — and renders whatever comes back, live, no mock data.
+        Hit refetch below to fire them again on demand.
+      </p>
+      <div class="request-badges">
+        <span class="badge" id="badge-users"><span class="dot"></span><span id="badge-users-text">GET /users — sending…</span></span>
+        <span class="badge" id="badge-posts"><span class="dot dot-cyan"></span><span id="badge-posts-text">GET /posts — sending…</span></span>
+      </div>
     </div>
-    <div class="container" id="app"></div>
+  </section>
+
+  <main class="container api-main" id="api-main">
+    <div class="log-panel reveal">
+      <div class="log-panel-header">
+        <span class="eyebrow">Request Log</span>
+        <span class="log-hint">Every load and refetch below lands a real entry here.</span>
+      </div>
+      <ul class="request-log" id="request-log" aria-live="polite"></ul>
+    </div>
+
+    <div class="users">
+      <h2>
+        <span class="section-tag">01</span> Users
+        <button class="refetch-btn" type="button" data-refetch="users">
+          <span class="spin">⟳</span> Refetch
+        </button>
+      </h2>
+    </div>
+    <div id="app"></div>
     <div id="res"></div>
   </main>
-  <!--  -->
+
   <!-- Footer -->
-  <footer class="footer bg-dark py-5">
-    <div class="container grid grid-3">
-      <div class="copyright">
-        <h1>Shams.</h1>
-        <p>Copyright &copy; 2025</p>
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <span class="logo">Shams.</span>
+        <p class="muted">Copyright &copy; 2026</p>
+        <p class="tagline">Built with HTML · CSS · JS — no framework.</p>
       </div>
-      <nav>
+      <nav class="footer-nav">
         <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="blogs.html">Blogs</a></li>
           <li><a href="api.html">API</a></li>
-          <li><a href="media.html">Media</a></li>
+          <li><a href="media.html">Reference</a></li>
         </ul>
-      
       </nav>
       <div class="social">
-        <a href="https://github.com/toor-4"><i class="fab fa-github fa-2x"></i></a>
-        <a href="#"><i class="fab fa-facebook fa-2x"></i></a>
-        <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
-        <a href="#"><i class="fab fa-twitter fa-2x"></i></a>
+        <a href="https://github.com/toor-4" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
       </div>
     </div>
   </footer>
-  
-  <!--  -->
+
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
   <script src="./images.js"></script>
-
+  <script src="js/main.js"></script>
 
   <script>
+    // ---- shared helpers: badges + request log ----
+    function setBadge(name, state, { status, ms } = {}) {
+      const badge = document.getElementById(`badge-${name}`);
+      const text = document.getElementById(`badge-${name}-text`);
+      const method = name === "users" ? "GET /users" : "GET /posts";
+      const via = name === "users" ? "fetch()" : "axios";
 
-    // FETCH API
-  //  const url_1 = "https://apimocker.com/users";
-  const url_1 =  "https://jsonplaceholder.typicode.com/users"
-    
-    async function getUsers() {
-    const response = await fetch(url_1);
-    // console.log(response)
-     const data = await response.json();
-    //  console.log(data)
-     const resData = data.slice(0,6)
-    
-     resData.forEach((element, index) => {
-        // console.log(element);
+      badge.classList.remove("is-settled", "is-error");
 
-        const _name = `${element.name}`;
-        const _email = `${element.email}`;
-   
-        const div = document.createElement("div");
- 
-        div.className = "card";
-
-        const listItem1 = document.createElement("li");
-        const listItem2 = document.createElement("li");
-
-        const image = document.createElement("img");
-
-        // use image from images.js by matching index
-        if (images[index]) {
-          image.src = images[index].img
-        } else {
-          image.src = "images/default.jpg"; // fallback if not enough images
-        }
-
-        image.style.width = "70px";
-        image.style.height = "70px"
-        image.style.marginBottom = "15px";
-
-        const el_name = document.createTextNode(_name);
-        const el_email = document.createTextNode(_email);
-
-        listItem1.appendChild(el_name);
-        listItem2.appendChild(el_email);
-
-        div.appendChild(image);
-        div.appendChild(listItem1);
-        div.appendChild(listItem2);
-
-        const app = document.getElementById("app");
-        app.className = "user-grid";
-        app.appendChild(div);
-      });
-    }
-    getUsers();
-
-  const url_2 = "https://jsonplaceholder.typicode.com/posts?_limit=6"
-    // function getPosts() {
-    //   axios
-    //   .get(url_2)
-    //     .then((res) => showOutput(res))
-    //     .catch((err) => console.error(err));
-    // }
-// AXIOS ( third party API)
-    async function getPosts(){
-      try {
-        const res = await axios.get(url_2)
-        showOutput(res)
-      } catch (error) {
-        console.error(err)
+      if (state === "pending") {
+        text.textContent = `${method} — sending…`;
+      } else if (state === "done") {
+        badge.classList.add("is-settled");
+        text.textContent = `${method} — ${status} · ${ms}ms`;
+      } else if (state === "error") {
+        badge.classList.add("is-settled", "is-error");
+        text.textContent = `${method} — failed`;
       }
     }
 
-    function showOutput(res) {
-      const data = res.data;
-      // console.log(data);
+    function logRequest({ method, path, status, ms, ok }) {
+      const list = document.getElementById("request-log");
+      const li = document.createElement("li");
+      li.className = `log-entry ${ok ? "is-ok" : "is-error"}`;
+
+      const time = new Date().toLocaleTimeString([], { hour12: false });
+      li.innerHTML = `
+        <span class="log-time">${time}</span>
+        <span class="log-method">${method}</span>
+        <span class="log-path">${path}</span>
+        <span class="log-status">${ok ? `→ ${status} OK` : "→ failed"}</span>
+        <span class="log-ms">${ms}ms</span>
+      `;
+
+      list.insertBefore(li, list.firstChild);
+      while (list.children.length > 6) {
+        list.removeChild(list.lastChild);
+      }
+    }
+
+    function skeletonUserCards(n) {
+      return Array.from({ length: n })
+        .map(
+          () => `
+        <div class="card">
+          <div class="skeleton skeleton-avatar"></div>
+          <div class="skeleton skeleton-line" style="width: 70%"></div>
+          <div class="skeleton skeleton-line" style="width: 50%"></div>
+        </div>`
+        )
+        .join("");
+    }
+
+    // ---- FETCH API ----
+    const url_1 = "https://jsonplaceholder.typicode.com/users";
+
+    async function getUsers() {
+      const btn = document.querySelector('[data-refetch="users"]');
+      const app = document.getElementById("app");
+
+      btn.disabled = true;
+      setBadge("users", "pending");
+      app.className = "user-grid";
+      app.innerHTML = skeletonUserCards(6);
+
+      const t0 = performance.now();
+      try {
+        const response = await fetch(url_1);
+        const data = await response.json();
+        const ms = Math.round(performance.now() - t0);
+        const resData = data.slice(0, 6);
+
+        app.innerHTML = "";
+
+        resData.forEach((element, index) => {
+          const _name = `${element.name}`;
+          const _email = `${element.email}`;
+
+          const div = document.createElement("div");
+          div.className = "card";
+
+          const listItem1 = document.createElement("li");
+          const listItem2 = document.createElement("li");
+
+          const image = document.createElement("img");
+
+          // use image from images.js by matching index
+          if (images[index]) {
+            image.src = images[index].img;
+          } else {
+            image.src = "images/default.jpg"; // fallback if not enough images
+          }
+
+          const el_name = document.createTextNode(_name);
+          const el_email = document.createTextNode(_email);
+
+          listItem1.appendChild(el_name);
+          listItem2.appendChild(el_email);
+
+          div.appendChild(image);
+          div.appendChild(listItem1);
+          div.appendChild(listItem2);
+
+          app.appendChild(div);
+        });
+
+        setBadge("users", "done", { status: response.status, ms });
+        logRequest({ method: "GET", path: "/users", status: response.status, ms, ok: true });
+      } catch (error) {
+        const ms = Math.round(performance.now() - t0);
+        app.innerHTML = `<p class="error-note">Couldn't load users — try refetching.</p>`;
+        setBadge("users", "error");
+        logRequest({ method: "GET", path: "/users", status: null, ms, ok: false });
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    const url_2 = "https://jsonplaceholder.typicode.com/posts?_limit=6";
+
+    // ---- AXIOS (third party API) ----
+    async function getPosts() {
+      setBadge("posts", "pending");
+      showPostsSkeleton();
+
+      const t0 = performance.now();
+      try {
+        const res = await axios.get(url_2);
+        const ms = Math.round(performance.now() - t0);
+        showOutput(res, ms);
+        setBadge("posts", "done", { status: res.status, ms });
+        logRequest({ method: "GET", path: "/posts", status: res.status, ms, ok: true });
+      } catch (error) {
+        const ms = Math.round(performance.now() - t0);
+        document.getElementById("res").innerHTML = `
+          <div class="users">
+            <h2><span class="section-tag">02</span> Posts</h2>
+          </div>
+          <p class="error-note">Couldn't load posts — try refetching.</p>
+        `;
+        setBadge("posts", "error");
+        logRequest({ method: "GET", path: "/posts", status: null, ms, ok: false });
+      }
+    }
+
+    function showPostsSkeleton() {
       document.getElementById("res").innerHTML = `
       <div class="users">
-        <h1>Posts</h1>
+        <h2>
+          <span class="section-tag">02</span> Posts
+          <button class="refetch-btn" type="button" data-refetch="posts" disabled>
+            <span class="spin">⟳</span> Refetch
+          </button>
+        </h2>
+      </div>
+      <div class="user-grid posts">
+        <div class="skeleton" style="aspect-ratio: 4 / 3"></div>
+        <div class="res">
+          <ul class="title">
+            ${Array.from({ length: 6 })
+              .map(() => `<li class="card para"><div class="skeleton skeleton-line" style="width: 90%; margin: 0"></div></li>`)
+              .join("")}
+          </ul>
+        </div>
+      </div>
+      `;
+    }
+
+    function showOutput(res) {
+      document.getElementById("res").innerHTML = `
+      <div class="users">
+        <h2>
+          <span class="section-tag">02</span> Posts
+          <button class="refetch-btn" type="button" data-refetch="posts">
+            <span class="spin">⟳</span> Refetch
+          </button>
+        </h2>
       </div>
 
-      <div class="user-grid  posts">
+      <div class="user-grid posts">
         <div>
-          <img  src="./images/fetch-lg.png" />
+          <img src="./images/fetch-lg.png" />
         </div>
-      <div class="res">
-        <ul class="title">
+        <div class="res">
+          <ul class="title">
               ${res.data
           .map(
             (post) =>
               `<li class='card para'>${post.title}</li>`
           )
           .join("")}
-        </ul>
+          </ul>
+        </div>
       </div>
 `;
     }
 
+    // ---- wire up refetch buttons (delegated so it still works after re-render) ----
+    document.getElementById("api-main").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-refetch]");
+      if (!btn || btn.disabled) return;
+      if (btn.dataset.refetch === "users") getUsers();
+      if (btn.dataset.refetch === "posts") getPosts();
+    });
+
+    getUsers();
     getPosts();
   </script>
 </body>

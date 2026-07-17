@@ -3,168 +3,241 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="REST APIs explained through a restaurant: customer, waiter, and chef map directly onto client, API, and server." />
+    <link rel="icon" href="images/favicon.png" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
       integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
       crossorigin="anonymous" />
-    <title>Blogs</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
       rel="stylesheet" />
-    <style>
-      .blog h1 {
-        margin: 60px 0 40px 0;
-      }
 
-      .resto-1 img {
-        max-width: 500px;
-      }
-
-      .resto-1 {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        /* grid-template-rows: 500px 300px 300px 300px; */
-        gap: 40px;
-        /* padding: 20px; */
-      }
-
-      .resto-2 {
-        display: grid;
-        grid-template-columns: 1fr;
-        line-height: 1.9;
-      }
-
-      span {
-        font-size: 18px;
-        font-weight: 900;
-      }
-
-      @media (max-width: 800px) {
-        .resto-1 {
-          grid-template-columns: 1fr;
-        }
-        .resto-1 img {
-          max-width: 720px;
-        }
-      }
-
-      @media (max-width: 550px) {
-        .resto-1 {
-          display: grid;
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
-
-    <title>Home</title>
+    <title>Shams. — The Waiter's API</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/utilities.css" />
+    <style>
+      .post {
+        max-width: 760px;
+        padding-top: 3.5rem;
+        padding-bottom: 4rem;
+      }
+
+      .post h1 {
+        font-size: clamp(2rem, 4.5vw, 2.8rem);
+        margin-bottom: 2rem;
+      }
+
+      .post-figure {
+        margin-bottom: 2.5rem;
+      }
+
+      .post-figure img {
+        border-radius: 6px;
+        border: 1px solid #dde5ec;
+      }
+
+      .post-figure figcaption {
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        color: var(--muted-color);
+        margin-top: 0.6rem;
+      }
+
+      .post-lead {
+        font-size: 1.2rem;
+        line-height: 1.7;
+        color: var(--dark-color);
+        border-left: 3px solid var(--primary-color);
+        padding-left: 1.5rem;
+        margin-bottom: 3rem;
+      }
+
+      .post-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+      }
+
+      .post-step {
+        border-top: 1px solid #dde5ec;
+        padding-top: 2rem;
+      }
+
+      .step-tag {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--primary-color);
+        margin-bottom: 0.6rem;
+      }
+
+      .post-step h2 {
+        font-size: 1.4rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .post-step h3 {
+        font-family: var(--font-body);
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--muted-color);
+        margin-bottom: 1rem;
+      }
+
+      .post-step p {
+        margin-bottom: 0.9rem;
+      }
+
+      .post-step p:last-child {
+        margin-bottom: 0;
+      }
+
+      .post-step strong {
+        font-weight: 600;
+        color: var(--dark-color);
+      }
+    </style>
   </head>
   <body>
-    <div class="navbar">
-      <div class="container flex">
-        <h1 class="logo"><a href="index.html">Shams.</a></h1>
-        <nav>
+    <header class="site-header">
+      <div class="container nav-inner">
+        <a class="logo" href="index.html">Shams<span class="accent-dot">.</span></a>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-nav"
+          aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+        <nav id="primary-nav" class="primary-nav">
           <ul class="nav-list">
             <li><a href="index.html">Home</a></li>
-            <li><a href="blogs.html">Blogs</a></li>
+            <li><a href="blogs.html" class="active">Blogs</a></li>
             <li><a href="api.html">API</a></li>
-            <li><a href="media.html">Media</a></li>
+            <li><a href="media.html">Reference</a></li>
           </ul>
         </nav>
       </div>
-    </div>
-    <div class="container blog">
-      <h1>The Waiter's API: Node.js CRUD for Chefs & Customers</h1>
-      <div class="resto-1">
-        <img src="./images/cust_wait_chef.png" alt="at the resto" />
+    </header>
 
-        <div>
-          <h2>The Analogy: Customer, Waiter, and Chef API</h2>
-          <h3>
-            Imagine you're at a restaurant, eager to enjoy a meal. The process
-            of ordering and receiving your food is a great way to understand how
-            an API works.
-          </h3>
+    <article class="container post">
+      <p class="eyebrow">Field Note — REST APIs Explained</p>
+      <h1>The Waiter's API: Node.js CRUD for Chefs &amp; Customers</h1>
+
+      <figure class="post-figure">
+        <img src="./images/cust_wait_chef.png" alt="Illustration of a customer, waiter, and chef at a restaurant" />
+        <figcaption>Fig. 1 — The restaurant, mapped onto a request.</figcaption>
+      </figure>
+
+      <p class="post-lead">
+        Imagine you're at a restaurant, eager to enjoy a meal. The process of
+        ordering and receiving your food is a great way to understand how an
+        API works.
+      </p>
+
+      <ol class="post-steps">
+        <li class="post-step">
+          <span class="step-tag">01 · Customer</span>
+          <h2>The Client / User Interface</h2>
+          <h3>You, sitting at the table, deciding what you want to eat.</h3>
           <p>
-            1. <span>The Customer </span>(The Client/User Interface) Who they
-            are: You, sitting at the table, deciding what you want to eat. You
-            don't know (or care) how the food is cooked, what ingredients are in
-            the kitchen, or the chef's secret recipes. Their role in API: The
-            client application or user interface. This could be your web
-            browser, a mobile app, or even another server. It's the part that
-            needs information or wants to perform an action. Their interaction:
-            The customer (client) makes a request – "I'd like a steak."
+            You don't know — or care — how the food is cooked, what
+            ingredients are in the kitchen, or the chef's secret recipes.
           </p>
-        </div>
-      </div>
-      <div class="resto-2">
-        <p>
-          2. <span>The Waiter</span> (The API/Application Layer) Who they are:
-          The person who takes your order, brings it to the kitchen, and
-          delivers the food back to you. They are the intermediary. Their role
-          in API: The API (Application Programming Interface) itself,
-          specifically the server-side application layer (e.g., your
-          Node.js/Express app).
-        </p>
-        <p>
-          The waiter speaks both the customer's language (menu items) and the
-          chef's language (cooking instructions). Their interaction: Receives
-          the customer's request (e.g., an HTTP request like GET /menu/steak or
-          POST /orders with steak details). Understands what the customer wants.
-          Translates that request into specific instructions for the chef.
-          Passes the instructions to the chef. Receives the prepared dish from
-          the chef. Delivers the final product (the data/response) back to the
-          customer.
-        </p>
-        <p>
-          3. <span>The Chef Cook</span> (The Database/Resource Storage) Who they
-          are: The master of the kitchen, responsible for preparing the food
-          according to the instructions. They manage all the ingredients,
-          cooking equipment, and recipes. Their role in API: The database or
-          resource storage (e.g., MongoDB). This is where the actual data
-          (ingredients) is stored and where the operations (cooking) are
-          performed. The chef only interacts with the waiter, not directly with
-          the customer. Their interaction: Receives precise instructions from
-          the waiter (e.g., "get ingredients for steak," "cook steak
-          medium-rare," "add a new dessert recipe," "remove a dish from the
-          menu"). Accesses ingredients (retrieves data from the database).
-          Performs the requested action (processes the data). Prepares the dish
-          (formats the data). Hands the finished dish (the result of the
-          operation) back to the waiter.
-        </p>
-      </div>
-    </div>
-    <!-- Footer -->
+          <p>
+            <strong>In API terms:</strong> the client application or user
+            interface. This could be a web browser, a mobile app, or even
+            another server — the part that needs information or wants to
+            perform an action.
+          </p>
+          <p>
+            <strong>The interaction:</strong> the customer (client) makes a
+            request — "I'd like a steak."
+          </p>
+        </li>
 
-    <footer class="footer bg-dark py-5">
-      <div class="container grid grid-3">
-        <div class="copyright">
-          <h1>Shams.</h1>
-          <p>Copyright &copy; 2025</p>
+        <li class="post-step">
+          <span class="step-tag">02 · Waiter</span>
+          <h2>The API / Application Layer</h2>
+          <h3>The person who takes your order, brings it to the kitchen, and delivers the food back to you.</h3>
+          <p>
+            They are the intermediary — speaking both the customer's language
+            (menu items) and the chef's language (cooking instructions).
+          </p>
+          <p>
+            <strong>In API terms:</strong> the API itself, specifically the
+            server-side application layer (e.g. a Node.js/Express app).
+          </p>
+          <p>
+            <strong>The interaction:</strong> receives the customer's request
+            (an HTTP request like <code>GET /menu/steak</code> or
+            <code>POST /orders</code>), translates it into instructions for
+            the chef, passes them along, then delivers the finished dish — the
+            data/response — back to the customer.
+          </p>
+        </li>
+
+        <li class="post-step">
+          <span class="step-tag">03 · Chef</span>
+          <h2>The Database / Resource Storage</h2>
+          <h3>The master of the kitchen, responsible for preparing the food according to instructions.</h3>
+          <p>
+            They manage all the ingredients, cooking equipment, and recipes,
+            and only interact with the waiter — never directly with the
+            customer.
+          </p>
+          <p>
+            <strong>In API terms:</strong> the database or resource storage
+            (e.g. MongoDB) — where the actual data is stored and the
+            operations are performed.
+          </p>
+          <p>
+            <strong>The interaction:</strong> receives precise instructions
+            from the waiter ("get ingredients for steak," "cook medium-rare,"
+            "add a new dessert," "remove a dish"), accesses and processes the
+            data, then hands the finished result back to the waiter.
+          </p>
+        </li>
+      </ol>
+    </article>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <span class="logo">Shams.</span>
+          <p class="muted">Copyright &copy; 2026</p>
+          <p class="tagline">Built with HTML · CSS · JS — no framework.</p>
         </div>
-        <nav>
+        <nav class="footer-nav">
           <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="blogs.html">Blogs</a></li>
             <li><a href="api.html">API</a></li>
-            <li><a href="media.html">Media</a></li>
+            <li><a href="media.html">Reference</a></li>
           </ul>
         </nav>
         <div class="social">
-          <a href="https://github.com/toor-4"
-            ><i class="fab fa-github fa-2x"></i
+          <a href="https://github.com/toor-4" aria-label="GitHub"
+            ><i class="fab fa-github"></i
           ></a>
-          <a href="#"><i class="fab fa-facebook fa-2x"></i></a>
-          <a href="#"><i class="fab fa-instagram fa-2x"></i></a>
-          <a href="#"><i class="fab fa-twitter fa-2x"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
         </div>
       </div>
     </footer>
     <!-- <script src="js/menu.js"></script> -->
+    <script src="js/main.js"></script>
   </body>
 </html>
