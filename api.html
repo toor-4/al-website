@@ -250,6 +250,13 @@
       border-radius: 6px;
       padding: 1.5rem;
       animation: card-in 0.35s ease both;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: var(--secondary-color);
+      box-shadow: 0 12px 24px rgba(10, 25, 41, 0.1);
     }
 
     @keyframes card-in {
@@ -269,11 +276,23 @@
       border-radius: 50%;
       object-fit: cover;
       margin-bottom: 0.9rem;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover img {
+      transform: scale(1.08);
     }
 
     .card li:first-of-type {
+      display: inline-block;
       font-weight: 600;
       list-style: none;
+      transform-origin: left center;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover li:first-of-type {
+      transform: scale(1.12);
     }
 
     .card li:nth-child(2) {
@@ -338,28 +357,37 @@
       margin-top: 4rem;
     }
 
-    .user-grid.posts {
-      grid-template-columns: 1fr 2fr;
-      align-items: start;
-      gap: 2rem;
-    }
-
-    .user-grid.posts img {
-      border-radius: 6px;
-      width: 100%;
-      height: auto;
-    }
-
-    .title {
+    .post-card {
       display: flex;
       flex-direction: column;
-      gap: 0.9rem;
-      list-style: none;
+      gap: 1rem;
     }
 
-    .card.para {
+    .post-title {
       margin: 0;
       font-size: 0.95rem;
+      flex: 1;
+    }
+
+    .post-byline {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid #eef2f6;
+    }
+
+    .post-byline img {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .post-byline span {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--muted-color);
     }
 
     .error-note {
@@ -538,6 +566,29 @@
         .join("");
     }
 
+    function skeletonPostCards(n) {
+      return Array.from({ length: n })
+        .map(
+          () => `
+        <div class="card post-card">
+          <div class="skeleton skeleton-line" style="width: 100%"></div>
+          <div class="skeleton skeleton-line" style="width: 80%"></div>
+          <div class="post-byline">
+            <div class="skeleton skeleton-avatar" style="width: 28px; height: 28px; margin: 0"></div>
+            <div class="skeleton skeleton-line" style="width: 90px; margin: 0"></div>
+          </div>
+        </div>`
+        )
+        .join("");
+    }
+
+    // users fetched so far, shared with getPosts() so post cards can show the author's name
+    let currentUsers = [];
+    let markUsersReady;
+    const usersReady = new Promise((resolve) => {
+      markUsersReady = resolve;
+    });
+
     // ---- FETCH API ----
     const url_1 = "https://jsonplaceholder.typicode.com/users";
 
@@ -561,7 +612,11 @@
 
         resData.forEach((element, index) => {
           const _name = `${element.name}`;
-          const _email = `${element.email}`;
+          const _email = `${_name
+            .toLowerCase()
+            .replace(/[^a-z\s]/g, "")
+            .trim()
+            .replace(/\s+/g, ".")}@example.com`;
 
           const div = document.createElement("div");
           div.className = "card";
@@ -591,6 +646,8 @@
           app.appendChild(div);
         });
 
+        currentUsers = resData;
+        markUsersReady();
         setBadge("users", "done", { status: response.status, ms });
         logRequest({ method: "GET", path: "/users", status: response.status, ms, ok: true });
       } catch (error) {
@@ -598,12 +655,16 @@
         app.innerHTML = `<p class="error-note">Couldn't load users — try refetching.</p>`;
         setBadge("users", "error");
         logRequest({ method: "GET", path: "/users", status: null, ms, ok: false });
+        markUsersReady();
       } finally {
         btn.disabled = false;
       }
     }
 
-    const url_2 = "https://jsonplaceholder.typicode.com/posts?_limit=6";
+    // fetches one post per user (post ids 1,11,21… are each user's first post)
+    // so every card in the grid below can show a real, varied author
+    const url_2 =
+      "https://jsonplaceholder.typicode.com/posts?id=1&id=11&id=21&id=31&id=41&id=51";
 
     // ---- AXIOS (third party API) ----
     async function getPosts() {
@@ -614,7 +675,8 @@
       try {
         const res = await axios.get(url_2);
         const ms = Math.round(performance.now() - t0);
-        showOutput(res, ms);
+        await usersReady;
+        showOutput(res);
         setBadge("posts", "done", { status: res.status, ms });
         logRequest({ method: "GET", path: "/posts", status: res.status, ms, ok: true });
       } catch (error) {
@@ -640,16 +702,7 @@
           </button>
         </h2>
       </div>
-      <div class="user-grid posts">
-        <div class="skeleton" style="aspect-ratio: 4 / 3"></div>
-        <div class="res">
-          <ul class="title">
-            ${Array.from({ length: 6 })
-              .map(() => `<li class="card para"><div class="skeleton skeleton-line" style="width: 90%; margin: 0"></div></li>`)
-              .join("")}
-          </ul>
-        </div>
-      </div>
+      <div class="user-grid">${skeletonPostCards(6)}</div>
       `;
     }
 
@@ -664,20 +717,24 @@
         </h2>
       </div>
 
-      <div class="user-grid posts">
-        <div>
-          <img src="./images/fetch-lg.png" />
-        </div>
-        <div class="res">
-          <ul class="title">
-              ${res.data
-          .map(
-            (post) =>
-              `<li class='card para'>${post.title}</li>`
-          )
+      <div class="user-grid">
+        ${res.data
+          .map((post) => {
+            const author = currentUsers.find((u) => u.id === post.userId);
+            const authorName = author ? author.name : `User #${post.userId}`;
+            const avatar =
+              images[post.userId - 1] ? images[post.userId - 1].img : "images/default.jpg";
+
+            return `
+              <div class="card post-card">
+                <p class="post-title">${post.title}</p>
+                <div class="post-byline">
+                  <img src="${avatar}" alt="" />
+                  <span>${authorName}</span>
+                </div>
+              </div>`;
+          })
           .join("")}
-          </ul>
-        </div>
       </div>
 `;
     }
