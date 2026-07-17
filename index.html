@@ -1,205 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Shams explains how frontend, backend, and APIs actually talk to each other, then proves it with live requests." />
-    <link rel="icon" href="images/favicon.png" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
-      integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
-      crossorigin="anonymous" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
-      rel="stylesheet" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Shams explains how frontend, backend, and APIs actually talk to each other, then proves it with live requests." />
+  <link rel="icon" href="images/favicon.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+    crossorigin="anonymous" />
 
-    <title>Shams. — How the web actually talks</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/utilities.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="container nav-inner">
-        <a class="logo" href="index.html">Shams<span class="accent-dot">.</span></a>
-        <button
-          class="nav-toggle"
-          type="button"
-          aria-expanded="false"
-          aria-controls="primary-nav"
-          aria-label="Toggle menu">
-          <span></span><span></span><span></span>
-        </button>
-        <nav id="primary-nav" class="primary-nav">
-          <ul class="nav-list">
-            <li><a href="index.html" class="active">Home</a></li>
-            <li><a href="blogs.html">Blogs</a></li>
-            <li><a href="api.html">API</a></li>
-            <li><a href="media.html">Reference</a></li>
-          </ul>
-        </nav>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <title>Shams. — How the web actually talks</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a class="logo" href="index.html">Shams<span class="accent-dot">.</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav"
+        aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="primary-nav" class="primary-nav">
+        <ul class="nav-list">
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="blogs.html">Blogs</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="media.html">Reference</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <p class="eyebrow">Request → Response, Explained</p>
+      <h1>The internet is just very fast waiters.</h1>
+      <p class="lead">
+        Shams breaks down how browsers, servers, and the APIs between them
+        actually talk to each other — then proves it with real requests,
+        live, on this site.
+      </p>
+      <div class="hero-actions">
+        <a href="blogs.html" class="btn btn-accent">Read the API breakdown</a>
+        <a href="api.html" class="btn btn-outline">See a live request</a>
       </div>
-    </header>
 
-    <!-- Hero -->
-    <section class="hero">
-      <div class="container hero-inner">
-        <p class="eyebrow">Request → Response, Explained</p>
-        <h1>The internet is just very fast waiters.</h1>
-        <p class="lead">
-          Shams breaks down how browsers, servers, and the APIs between them
-          actually talk to each other — then proves it with real requests,
-          live, on this site.
+      <div class="schematic" aria-hidden="true">
+        <div class="node">CLIENT</div>
+        <div class="wire wire-1"><span class="packet packet-1">GET /users</span></div>
+        <div class="node">API</div>
+        <div class="wire wire-2"><span class="packet packet-2">200 OK</span></div>
+        <div class="node">SERVER</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Concept -->
+  <section class="concept">
+    <div class="container text-center">
+      <h2>Three parts, one conversation</h2>
+      <p class="section-lead">
+        Every page load is a round trip. The client asks, the API carries
+        the request, the server does the real work and hands back an
+        answer.
+      </p>
+
+      <div class="node-grid">
+        <div class="node-card reveal">
+          <span class="node-tag">NODE 01</span>
+          <img src="./images/client-side.png" alt="" />
+          <h3>Client</h3>
+          <p>HTML / CSS / React — the part you see and click.</p>
+        </div>
+
+        <div class="node-card reveal">
+          <span class="node-tag">NODE 02</span>
+          <img src="./images/api-img.png" alt="" style="width: 84px; height: 56px" />
+          <h3>API</h3>
+          <p>Node.js / DRF — carries the request back and forth.</p>
+        </div>
+
+        <div class="node-card reveal">
+          <span class="node-tag">NODE 03</span>
+          <i class="fas fa-server fa-3x"></i>
+          <h3>Server</h3>
+          <p>Node.js / Django / PHP — where the real work happens.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ticker -->
+  <section class="ticker">
+    <div class="ticker-track">
+      <span>HTML</span>
+      <span>CSS</span>
+      <span>JAVASCRIPT</span>
+      <span>REACT</span>
+      <span>NODE.JS</span>
+      <span>DJANGO</span>
+      <span aria-hidden="true">HTML</span>
+      <span aria-hidden="true">CSS</span>
+      <span aria-hidden="true">JAVASCRIPT</span>
+      <span aria-hidden="true">REACT</span>
+      <span aria-hidden="true">NODE.JS</span>
+      <span aria-hidden="true">DJANGO</span>
+    </div>
+  </section>
+
+  <!-- Deploy -->
+  <section class="deploy">
+    <div class="container deploy-inner">
+      <div>
+        <span class="eyebrow">Ship it</span>
+        <h2>Deployment</h2>
+        <p>
+          Making the site live and reachable — pushed straight to GitHub
+          Pages on every commit to <code>master</code>. No build step, no
+          server to babysit.
         </p>
-        <div class="hero-actions">
-          <a href="blogs.html" class="btn btn-accent">Read the API breakdown</a>
-          <a href="api.html" class="btn btn-outline">See a live request</a>
-        </div>
+      </div>
+      <img src="images/cloud.png" alt="Illustration of cloud deployment" />
+    </div>
+  </section>
 
-        <div class="schematic" aria-hidden="true">
-          <div class="node">CLIENT</div>
-          <div class="wire wire-1"><span class="packet packet-1">GET /users</span></div>
-          <div class="node">API</div>
-          <div class="wire wire-2"><span class="packet packet-2">200 OK</span></div>
-          <div class="node">SERVER</div>
+  <!-- Stack -->
+  <section class="stack">
+    <div class="container text-center">
+      <h2>Languages, frameworks, runtime</h2>
+      <div class="stack-grid">
+        <div class="stack-card">
+          <img src="images/logos/JS.png" alt="" />
+          <h4>JavaScript</h4>
+        </div>
+        <div class="stack-card">
+          <img src="images/logos/python.png" alt="" />
+          <h4>Python</h4>
+        </div>
+        <div class="stack-card">
+          <img src="images/logos/html.png" alt="" />
+          <h4>HTML</h4>
+        </div>
+        <div class="stack-card">
+          <img src="images/logos/css.png" alt="" />
+          <h4>CSS</h4>
+        </div>
+        <div class="stack-card">
+          <img src="images/logos/django.png" alt="" />
+          <h4>Django</h4>
+        </div>
+        <div class="stack-card">
+          <img src="images/logos/node.png" alt="" />
+          <h4>Node.js</h4>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Concept -->
-    <section class="concept">
-      <div class="container text-center">
-        <h2>Three parts, one conversation</h2>
-        <p class="section-lead">
-          Every page load is a round trip. The client asks, the API carries
-          the request, the server does the real work and hands back an
-          answer.
-        </p>
-
-        <div class="node-grid">
-          <div class="node-card reveal">
-            <span class="node-tag">NODE 01</span>
-            <img src="./images/client-side.png" alt="" />
-            <h3>Client</h3>
-            <p>HTML / CSS / React — the part you see and click.</p>
-          </div>
-
-          <div class="node-card reveal">
-            <span class="node-tag">NODE 02</span>
-            <img src="./images/api-img.png" alt="" style="width: 84px; height: 56px" />
-            <h3>API</h3>
-            <p>Node.js / DRF — carries the request back and forth.</p>
-          </div>
-
-          <div class="node-card reveal">
-            <span class="node-tag">NODE 03</span>
-            <i class="fas fa-server fa-3x"></i>
-            <h3>Server</h3>
-            <p>Node.js / Django / PHP — where the real work happens.</p>
-          </div>
-        </div>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <span class="logo">Shams.</span>
+        <p class="muted">Copyright &copy; 2026</p>
+        <p class="tagline">Built with HTML · CSS · JS — no framework.</p>
       </div>
-    </section>
-
-    <!-- Ticker -->
-    <section class="ticker">
-      <div class="ticker-track">
-        <span>HTML</span>
-        <span>CSS</span>
-        <span>JAVASCRIPT</span>
-        <span>REACT</span>
-        <span>NODE.JS</span>
-        <span>DJANGO</span>
-        <span aria-hidden="true">HTML</span>
-        <span aria-hidden="true">CSS</span>
-        <span aria-hidden="true">JAVASCRIPT</span>
-        <span aria-hidden="true">REACT</span>
-        <span aria-hidden="true">NODE.JS</span>
-        <span aria-hidden="true">DJANGO</span>
+      <nav class="footer-nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="blogs.html">Blogs</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="media.html">Reference</a></li>
+        </ul>
+      </nav>
+      <div class="social">
+        <a href="https://github.com/toor-4" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
       </div>
-    </section>
+    </div>
+  </footer>
+  <!-- <script src="js/menu.js"></script> -->
+  <script src="js/main.js"></script>
+</body>
 
-    <!-- Deploy -->
-    <section class="deploy">
-      <div class="container deploy-inner">
-        <div>
-          <span class="eyebrow">Ship it</span>
-          <h2>Deployment</h2>
-          <p>
-            Making the site live and reachable — pushed straight to GitHub
-            Pages on every commit to <code>master</code>. No build step, no
-            server to babysit.
-          </p>
-        </div>
-        <img src="images/cloud.png" alt="Illustration of cloud deployment" />
-      </div>
-    </section>
-
-    <!-- Stack -->
-    <section class="stack">
-      <div class="container text-center">
-        <h2>Languages, frameworks, runtime</h2>
-        <div class="stack-grid">
-          <div class="stack-card">
-            <img src="images/logos/JS.png" alt="" />
-            <h4>JavaScript</h4>
-          </div>
-          <div class="stack-card">
-            <img src="images/logos/python.png" alt="" />
-            <h4>Python</h4>
-          </div>
-          <div class="stack-card">
-            <img src="images/logos/html.png" alt="" />
-            <h4>HTML</h4>
-          </div>
-          <div class="stack-card">
-            <img src="images/logos/css.png" alt="" />
-            <h4>CSS</h4>
-          </div>
-          <div class="stack-card">
-            <img src="images/logos/django.png" alt="" />
-            <h4>Django</h4>
-          </div>
-          <div class="stack-card">
-            <img src="images/logos/node.png" alt="" />
-            <h4>Node.js</h4>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="site-footer">
-      <div class="container footer-grid">
-        <div class="footer-brand">
-          <span class="logo">Shams.</span>
-          <p class="muted">Copyright &copy; 2026</p>
-          <p class="tagline">Built with HTML · CSS · JS — no framework.</p>
-        </div>
-        <nav class="footer-nav">
-          <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="blogs.html">Blogs</a></li>
-            <li><a href="api.html">API</a></li>
-            <li><a href="media.html">Reference</a></li>
-          </ul>
-        </nav>
-        <div class="social">
-          <a href="https://github.com/toor-4" aria-label="GitHub"
-            ><i class="fab fa-github"></i
-          ></a>
-          <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-        </div>
-      </div>
-    </footer>
-    <!-- <script src="js/menu.js"></script> -->
-    <script src="js/main.js"></script>
-  </body>
 </html>

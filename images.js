@@ -15,4 +15,7 @@ const images = [
   {
     img: "./images/man-2.jpg",
   },
+  {
+    img: "./images/woman-4.jpg",
+  },
 ];
